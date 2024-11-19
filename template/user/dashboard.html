@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ author.username }}'s Dashboard</h1>
+    <img src="{{ author.profile_picture.url }}" alt="{{ author.authorname }}'s profile picture" class="w-36 h-36 rounded-full mb-6 mx-auto">
+    
+    <div class="mb-4">
+        <p class="text-lg text-gray-700"><strong>Full Name:</strong> {{ author.username }}</p>
+        <p class="text-lg text-gray-700"><strong>Email:</strong> {{ author.email }}</p>
+        <p class="text-lg text-gray-700"><strong>Bio:</strong> {{ author.bio }}</p>
+    </div>
+    
+    <div>
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">Your Posts</h2>
+        {% for post in author.posts.all %}
+            <div class="bg-gray-100 p-4 mb-4 rounded-lg shadow">
+                <h3 class="text-lg font-bold text-gray-800">{{ post.title }}</h3>
+                <p class="text-gray-700">{{ post.content }}</p>
+                <p class="text-sm text-gray-500"><em>Posted on: {{ post.created_at }}</em></p>
+            </div>
+        {% empty %}
+            <p class="text-gray-500">No posts available.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,4 +1,6 @@
 from django import forms
+from django.db.models import Max
+from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import (User, BlogPost, Comment, Category, 
                     ContactSuggestion, Share)
@@ -18,6 +20,13 @@ class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'profile_picture', 'bio')
+    def __init__(self, *args, **kwargs):
+        super(CustomUserChangeForm, self).__init__(*args, **kwargs)
+        # Add CSS classes to form fields for styling
+        self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Username'})
+        self.fields['email'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Email'})
+        self.fields['profile_picture'].widget.attrs.update({'class': 'form-control-file'})
+        self.fields['bio'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Tell us about yourself...', 'rows': 3})
 
 class BlogPostForm(forms.ModelForm):
     class Meta:
@@ -32,6 +41,26 @@ class BlogPostForm(forms.ModelForm):
                 'class': 'form-control'
             })
         }
+
+    def save(self, commit=True):
+        # Get the instance of the BlogPost
+        blog_post = super().save(commit=False)
+
+        # Check if featured_image is empty
+        if not blog_post.featured_image:
+            # Query for the most liked or viewed post in the same category
+            most_liked_post = BlogPost.objects.filter(category=blog_post.category).order_by('-likes', '-views').first()
+            
+            # If a post is found, set its featured image
+            if most_liked_post:
+                blog_post.featured_image = most_liked_post.featured_image
+            else:
+                blog_post.featured_image = f"{settings.STATIC_URL}post/blg.jpg"
+
+        if commit:
+            blog_post.save()
+        
+        return blog_post
 
 class CommentForm(forms.ModelForm):
     class Meta:

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+<style>
+    .container {
+        margin: 20px auto;
+        max-width: 600px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+    
+    .bio-section {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+        background-color: #fff;
+    }
+</style>
+{% block content %}
+<div class="container">
+    <h2 class="text-center">Profile Settings</h2>
+    <form method="POST" enctype="multipart/form-data" class="form-group">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Update Profile</button>
+    </form>
+    <div class="bio-section">
+        <h4>Bio</h4>
+        <p>{{ user.bio|default:"No bio available." }}</p>
+    </div>
+</div>
+{% endblock %}

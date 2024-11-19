@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto mt-5">
+    <h2 class="text-2xl font-semibold mb-4">Edit Comment</h2>
+
+    {% if messages %}
+        <div class="mb-4">
+            {% for message in messages %}
+                <div class="alert alert-success">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-4">
+            <textarea name="{{ form.content.name }}" rows="4" placeholder="Edit your comment..." class="w-full p-2 border rounded-lg">{{ form.content.value }}</textarea>
+        </div>
+        
+        <div class="flex justify-end">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Update Comment</button>
+            <a href="{% url 'post_detail' comment.post.slug %}" class="ml-2 text-gray-500 hover:underline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

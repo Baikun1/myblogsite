@@ -37,12 +37,12 @@
                 <!-- Left Side: Company Info -->
                 <div class="w-full md:w-1/2 mb-12 md:mb-0">
                     <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-                        Learn from my coding journey
+                        Learn from Our journey
                     </h1>
-                    <p class="text-xl mb-8 text-gray-300">Join me as I learn, grow, and share my experiences in
+                    <p class="text-xl mb-8 text-gray-300">Join us as We learn, grow, and share  experiences in
                         the world of technology</p>
                     <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                        <a href="#"
+                        <a id="subscribe-button" href="#"
                             class="bg-white text-blue-900 font-semibold px-8 py-3 rounded-full hover:bg-blue-100 transition duration-300 text-center">Subscribe</a>
                         <a href="./underdevelopment.html"
                             class="border-2 border-white text-white font-semibold px-8 py-3 rounded-full hover:bg-white hover:text-blue-900 transition duration-300 text-center">Learn
@@ -100,31 +100,9 @@
     </section>
 <!-- Featured Posts -->
 <div class="container mx-auto py-16">
-    <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Featured Posts</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {% for post in featured_posts %}
-        <div class="bg-white rounded-lg shadow-lg p-6 learn-card min-h-[300px] max-h-[400px]"> <!-- Added min-h and max-h -->
-            {% if post.featured_image %}
-                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="h-48 w-full object-cover rounded-t-lg mb-4">
-            {% else %}
-                <img src="https://via.placeholder.com/400" alt="Placeholder Image" class="h-48 w-full object-cover rounded-t-lg mb-4">
-            {% endif %}
-            <!-- Post Category -->
-            <p class="text-sm text-blue-500 mb-1">{{ post.category.name }}</p>
-            <h3 class="text-xl font-semibold mb-2">
-                <a href="{% url 'post_detail' post.slug %}" class="hover:underline">{{ post.title }}</a>
-            </h3>
-            <div class="text-gray-600">{{ post.excerpt|safe }}</div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-
-<!-- Recent Posts -->
-<div class="container mx-auto py-16">
     <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Recent Posts</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {% for post in recent_posts %}
+        {% for post in featured_posts %}
         <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
             <!-- Image Section -->
             {% if post.featured_image %}
@@ -137,11 +115,14 @@
             <div class="p-6 flex flex-col flex-grow">
                 <!-- User Profile -->
                 <div class="flex items-center mb-4">
-                    <img src="{{ post.author.profile_picture.url }}" alt="{{ post.author.name }}" 
-                         class="h-10 w-10 rounded-full object-cover mr-3">
+                    <a href="{% url 'user_dashboard' post.author.username %}">
+                        <img src="{% if post.author.profile_picture and post.author.profile_picture.url %}{{ post.author.profile_picture.url }}{% else %}{{ STATIC_URL }}user/profilpicdefault.png{% endif %}" 
+                        alt="{{ post.author.name }}" 
+                        class="h-10 w-10 rounded-full object-cover mr-3">
+                    </a>
                     <div>
-                        <p class="text-sm font-semibold text-gray-800">{{ post.author.name }}</p>
-                        <p class="text-xs text-gray-500">Published on {{ post.published_date }}</p>
+                        <p class="text-sm font-semibold text-gray-800">{{ post.author}}</p>
+                        <p class="text-xs text-gray-500">Published on {{ post.created_at }}</p>
                     </div>
                 </div>
 
@@ -165,18 +146,27 @@
             <div class="p-4 border-t border-gray-200 flex items-center justify-between">
                 <!-- Message and Like Counts -->
                 <div class="flex items-center space-x-4 text-sm text-gray-500">
-                    <div class="flex items-center">
-                        <svg class="h-5 w-5 text-blue-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                    <button class="like-button flex items-center space-x-2" data-post-slug="{{ post.slug }}" data-likes="{{ post.likes.count }}">
+                        <svg class="h-5 w-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
                         </svg>
-                        {{ post.likes }} Likes
-                    </div>
+                        <span class="likes-count">{{ post.likes.count }}</span>
+                    </button>
+                    
                     <div class="flex items-center">
                         <svg class="h-5 w-5 text-gray-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M20 2H4c-1.1 0-2 .9-2 2v16l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"></path>
                         </svg>
-                        {{ post.messages_count }} Messages
+                        {{ post.comments.count }} Comments
                     </div>
+
+                    <div class="flex items-center">
+                        <svg class="h-5 w-5 text-gray-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 3C6.48 3 2 12 2 12s4.48 9 10 9 10-9 10-9-4.48-9-10-9zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm-1-9h2v4h-2zm0 6h2v2h-2z"></path>
+                        </svg>
+                        <span class="views-count">{{ post.views_count }} Views</span>
+                    </div>
+                    
                 </div>
                 <!-- Read More -->
                 <a href="{% url 'post_detail' post.slug %}" 
@@ -189,9 +179,201 @@
     </div>
 </div>
 
+<div class="container mx-auto py-16">
+    <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Blog Posts</h2>
+
+    <!-- Filters Section -->
+    <div class="flex flex-wrap justify-end items-center mb-8 space-x-4">
+        <!-- Category Filter -->
+        <select id="category-filter" onchange="applyFilters()" class="border rounded-lg py-2 px-4 h-12">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+            <option value="{{ category.slug }}" {% if selected_category == category.slug %}selected{% endif %}>
+                {{ category.name }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <!-- Order Filter -->
+        <select id="order-filter" onchange="applyFilters()" class="border rounded-lg py-2 px-4 h-12">
+            <option value="recent" {% if selected_order == 'recent' %}selected{% endif %}>Recent</option>
+            <option value="most_liked" {% if selected_order == 'most_liked' %}selected{% endif %}>Most Liked</option>
+            <option value="most_commented" {% if selected_order == 'most_commented' %}selected{% endif %}>Most Commented</option>
+            <option value="most_viewed" {% if selected_order == 'most_viewed' %}selected{% endif %}>Most Viewed</option>
+        </select>
+
+        <form method="get" action="{% url 'home' %}" class="flex items-center space-x-2">
+            {% if selected_category %}
+            <input type="hidden" name="category" value="{{ selected_category }}">
+            {% endif %}
+            {% if selected_order %}
+            <input type="hidden" name="order" value="{{ selected_order }}">
+            {% endif %}
+            <input
+                type="text"
+                name="q"
+                placeholder="Search posts..."
+                value="{{ query|default:'' }}"
+                class="search-bar border rounded-lg py-2 px-4 h-12"
+            />
+            <button type="submit" class="bg-blue-500 text-white rounded-lg py-2 px-4 h-12">Search</button>
+        </form>
+    </div>
+
+    <!-- Posts Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for post in posts %}
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+            <!-- Image Section -->
+            {% if post.featured_image %}
+                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="h-48 w-full object-cover">
+            {% else %}
+                <img src="https://via.placeholder.com/400" alt="Placeholder Image" class="h-48 w-full object-cover">
+            {% endif %}
+
+            <div class="p-6 flex flex-col flex-grow">
+                <!-- User Profile -->
+                <div class="flex items-center mb-4">
+                    <a href="{% url 'user_dashboard' post.author.username %}">
+                        <img src="{% if post.author.profile_picture and post.author.profile_picture.url %}{{ post.author.profile_picture.url }}{% else %}{{ STATIC_URL }}user/profilpicdefault.png{% endif %}" 
+                        alt="{{ post.author.name }}" 
+                        class="h-10 w-10 rounded-full object-cover mr-3">
+                    </a>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800">{{ post.author }}</p>
+                        <p class="text-xs text-gray-500">Published on {{ post.created_at }}</p>
+                    </div>
+                </div>
+
+                <!-- Post Category and Title -->
+                <p class="text-sm text-blue-500 mb-2 font-medium uppercase tracking-wide">
+                    {{ post.category.name }}
+                </p>
+                <h3 class="text-xl font-semibold mb-4 text-gray-800 hover:text-blue-600">
+                    <a href="{% url 'post_detail' post.slug %}" class="hover:underline">
+                        {{ post.title }}
+                    </a>
+                </h3>
+
+                <!-- Post Excerpt -->
+                <div class="text-gray-600 text-sm leading-relaxed mb-4">
+                    {{ post.excerpt|safe }}
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-gray-200 flex items-center justify-between">
+                <div class="flex items-center space-x-4 text-sm text-gray-500">
+                    <button class="like-button flex items-center space-x-2" data-post-slug="{{ post.slug }}" data-likes="{{ post.likes.count }}">
+                        <svg class="h-5 w-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                        </svg>
+                        <span class="likes-count">{{ post.likes.count }}</span>
+                    </button>
+                    
+                    <div class="flex items-center">
+                        <svg class="h-5 w-5 text-gray-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 2H4c-1.1 0-2 .9-2 2v16l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"></path>
+                        </svg>
+                        {{ post.comments.count }} Comments
+                    </div>
+
+                    <div class="flex items-center">
+                        <svg class="h-5 w-5 text-gray-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 3C6.48 3 2 12 2 12s4.48 9 10 9 10-9 10-9-4.48-9-10-9zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm-1-9h2v4h-2zm0 6h2v2h-2z"></path>
+                        </svg>
+                        <span class="views-count">{{ post.views_count }} Views</span>
+                    </div>
+                    
+                </div>
+                <!-- Read More -->
+                <a href="{% url 'post_detail' post.slug %}" 
+                   class="text-blue-600 font-medium hover:text-blue-800">
+                    Read More →
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <p>No results found for your query.</p>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        <ul>
+            {% for page_num in posts.paginator.page_range %}
+            <li class="{% if posts.number == page_num %}active{% endif %}">
+                <a href="?page={{ page_num }}{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_order %}&order={{ selected_order }}{% endif %}">
+                    {{ page_num }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <!-- Pagination
+    <div class="mt-8">
+        {% if posts.has_other_pages %}
+        <div class="flex justify-center">
+            {% if posts.has_previous %}
+            <a href="?page={{ posts.previous_page_number }}" class="px-4 py-2">Previous</a>
+            {% endif %}
+            {% for num in posts.paginator.page_range %}
+            <a href="?page={{ num }}" class="px-4 py-2 {% if posts.number == num %}bg-blue-600 text-white{% endif %}">
+                {{ num }}
+            </a>
+            {% endfor %}
+            {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}" class="px-4 py-2">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div> -->
+</div>
 
 
-    </main>
+
+</main>
+<script>
+    document.getElementById('subscribe-button').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent default anchor behavior
+    
+        const button = this;
+        const isSubscribed = button.getAttribute('data-subscribed') === 'true';
+    
+        if (!isSubscribed) {
+            button.textContent = 'Subscribed';
+            button.setAttribute('data-subscribed', 'true');
+            button.classList.remove('bg-white', 'text-blue-900');
+            button.classList.add('bg-blue-600', 'text-white'); // Change style to indicate subscription
+    
+            fetch('/api/subscribe/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}' 
+                },
+                body: JSON.stringify({
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('User  subscribed successfully:', data);
+                } else {
+                    console.error('Subscription failed:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    });
+    function applyFilters() {
+        const category = document.getElementById('category-filter').value;
+        const order = document.getElementById('order-filter').value;
+        const url = `?category=${category}&order=${order}`;
+        window.location.href = url;
+    }
+</script>
 </body>
 
 </html>

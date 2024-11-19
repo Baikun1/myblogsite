@@ -83,6 +83,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
+    commentlikes = models.ManyToManyField(User, related_name='liked_comments', blank=True)
 
     class Meta:
         ordering = ['created_at']

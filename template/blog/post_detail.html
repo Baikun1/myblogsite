@@ -3,122 +3,332 @@
 {% block title %}{{ post.title }}{% endblock %}
 
 {% block content %}
+
 <div class="container mx-auto p-6" style="position: relative;">
     <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="rounded sticky-image" style="width: 100%; height: auto; max-height: 400px; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
     <div class="content p-6 rounded" style="max-width: 800px; transition: background-color 0.3s ease;">
         <h1 class="text-4xl font-bold mb-4 ">{{ post.title }}</h1>
         <p class="text-lg mb-4 ">{{ post.content|safe }}</p>
         <p class="text-lg">Views: <span class="font-semibold">{{ post.views_count }}</span></p>
-    </div>
+
+<!-- Buttons for Like and Share -->
+<div class="button-container">
+    {% if request.user == post.author %}
+    <a href="{% url 'edit_post' post.slug %}" class="btn btn-edit text-yellow-500" aria-label="Edit this post">
+        <i class="fas fa-edit"></i> Edit
+    </a>
+
+    <a href="{% url 'delete_post' post.slug %}" class="btn btn-delete text-red-500" aria-label="Delete this post">
+        <i class="fas fa-trash-alt"></i> Delete
+    </a>
+    {% endif %}
+
+    <p>Total Likes: <span id="likes-count">{{ post.likes.count }}</span></p>
+    <button id="like-button" data-slug="{{ post.slug }}" class="btn btn-like">
+        <i class="fas {% if user in post.likes.all %}fa-thumbs-down{% else %}fa-thumbs-up{% endif %}"></i>
+        {% if user in post.likes.all %}Unlike{% else %}Like{% endif %}
+    </button>
+
+    <button id="share-button" data-url="{{ request.build_absolute_uri }}" class="btn btn-share">
+        <i class="fas fa-share-alt"></i> Share
+    </button>
 </div>
 
-<h2 class="text-3xl font-semibold mt-6 mb-2">Comments</h2>
-<div class="space-y-4 bg-white p-4 rounded shadow hidden" id="comments-section">
-    {% for comment in comments %}
-        <div class="p-4 bg-gray-100 rounded shadow hover:shadow-lg transition-shadow duration-200 comment" data-comment-id="{{ comment.id }}">
-            <p class="font-semibold text-black">{{ comment.user.username }}:</p>
-            <p class="text-black">{{ comment.content }}</p>
-            <button class="edit-comment bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
-            <button class="delete-comment bg-red-500 text-white px-2 py-1 rounded">Delete</button>
-            <button class="reply-comment bg-blue-500 text-white px-2 py-1 rounded">Reply</button>
-            <div class="reply-form hidden">
-                <form method="post" class="bg-white p-2 rounded shadow">
+
+
+<div class="bg-white p-6 rounded-lg shadow-md">
+    
+        <!-- New Comment Form -->
+    <div class="mt-6 bg-gray-50 p-4 rounded-lg shadow">
+        <form method="POST" action="{% url 'post_detail' post.slug %}">
+            {% csrf_token %}
+            <textarea name="content" rows="3" placeholder="Add a comment..." class="w-full p-2 border rounded-lg"></textarea>
+            <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Submit</button>
+        </form>
+    </div>
+    <h2 class="text-2xl font-semibold mb-4">Comments</h2>
+    
+
+    <div id="comments-section" class="space-y-6">
+        {% for comment in comments %}
+        <div class="comment bg-gray-50 p-4 rounded-lg shadow">
+            
+            <!-- Top-level Comment -->
+            <div class="flex items-start">
+                <a href="{% url 'user_dashboard' comment.user.username %}" class="mr-3">
+                    <img src="{{ comment.user.profile_picture.url }}" alt="{{ comment.user.username }}'s profile picture" class="w-10 h-10 rounded-full">
+                </a>
+                <div class="flex-1">
+                    <div class="flex justify-between items-center">
+                        <p class="text-gray-800 font-semibold">
+                            <a href="{% url 'user_dashboard' comment.user.username %}" class="hover:underline">{{ comment.user.username }}</a>
+                        </p>
+                        <div>
+                            {% if request.user == comment.user or request.user.is_superuser %}
+                            <div class="flex items-center">
+                                <a href="{% url 'edit_comment' comment.id %}" class="text-yellow-500 mr-2"><i class="fas fa-edit"></i>Edit</a>
+                                <form method="POST" action="{% url 'delete_comment' comment.id %}" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="text-red-500"><i class="fas fa-trash-alt"></i>Delete</button>
+                                </form>
+                            </div>
+                            {% endif %}
+                            <button class="like-comment-button flex items-center text-blue-500" data-comment-id="{{ comment.id }}" id="like-button-{{ comment.id }}">
+                                {% if user in comment.likes.all %}
+                                <i class="fas fa-heart text-red-500"></i>
+                                Unlike
+                                {% else %}
+                                <i class="fas fa-heart holographic"></i>
+                                Like
+                                {% endif %}
+                            </button>
+                            <p class="text-gray-500 text-sm mt-1">Likes: <span id="likes-count-{{ comment.id }}">{{ comment.likes.count }}</span></p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mt-1 bg-gray-100 p-2 rounded-lg">{{ comment.content }}</p>
+                </div>
+            </div>
+    
+            <!-- Reply Button -->
+            <div class="flex justify-end mt-2">
+                <button class="reply-button flex items-center text-blue-500" onclick="toggleReplyForm({{ comment.id }})">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M15 8a3 3 0 11-6 0 3 3 0 016 0zm-6 3a6 6 0 100 12h6a6 6 0 100-12H9z" />
+                    </svg>
+                    Reply
+                </button>
+            </div>
+    
+            <!-- Reply Form -->
+            <div id="reply-form-{{ comment.id }}" class="hidden mt-4">
+                <form method="POST" action="{% url 'reply_comment' comment.id %}">
                     {% csrf_token %}
-                    <textarea name="reply_content" rows="2" placeholder="Add a reply..." required></textarea>
-                    <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200">Reply</button>
+                    <textarea name="content" rows="2" placeholder="Write a reply..." class="w-full p-2 border rounded-lg"></textarea>
+                    <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Submit</button>
                 </form>
+            </div>
+    
+            <!-- Replies -->
+            {% if comment.replies.all %}
+            <div class="replies pl-6 mt-4 border-l-2 border-gray-200">
+                {% for reply in comment.replies.all %}
+                <div class="reply bg-gray-100 p-3 rounded-lg mb-2">
+                    <div class="flex items-start">
+                        <a href="{% url 'user_dashboard' reply.user.username %}" class="mr-3">
+                            <img src="{{ reply.user.profile_picture.url }}" alt="{{ reply.user.username }}'s profile picture" class="w-8 h-8 rounded-full">
+                        </a>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-center">
+                                <p class="text-gray-800 font-semibold">
+                                    <a href="{% url 'user_dashboard' reply.user.username %}" class="hover:underline">{{ reply.user.username }}</a>
+                                </p>
+                                {% if request.user == reply.user or request.user.is_superuser %}
+                                <div>
+                                    <a href="{% url 'edit_comment' reply.id %}" class="text-yellow-500">Edit</a>
+                                    <form method="POST" action="{% url 'delete_comment' reply.id %}" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class ="text-red-500 ml-2">Delete</button>
+                                    </form>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <p class="text-gray-600 mt-1 bg-gray-100 p-2 rounded-lg">{{ reply.content }}</p>
+                            <p class="text-gray-500 text-sm">Posted on {{ reply.created_at|date:"M d, Y H:i" }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+
+</div>
+
+
+
+<div class="container mx-auto py-16">
+    <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Related Posts</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for related_post in related_posts %}
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+            <!-- Image Section -->
+            {% if related_post.featured_image %}
+                <img src="{{ related_post.featured_image.url }}" alt="{{ related_post.title }}" class="h-48 w-full object-cover">
+            {% else %}
+                <img src="https://via.placeholder.com/400" alt="Placeholder Image" class="h-48 w-full object-cover">
+            {% endif %}
+
+            <!-- Content Section -->
+            <div class="p-6 flex flex-col flex-grow">
+                <!-- Post Category and Title -->
+                <p class="text-sm text-blue-500 mb-2 font-medium uppercase tracking-wide">
+                    {{ related_post.category.name }}
+                </p>
+                <h3 class="text-xl font-semibold mb-4 text-gray-800 hover:text-blue-600">
+                    <a href="{% url 'post_detail' related_post.slug %}" class="hover:underline">
+                        {{ related_post.title }}
+                    </a>
+                </h3>
+
+                <!-- Post Excerpt -->
+                <div class="text-gray-600 text-sm leading-relaxed mb-4">
+                    {{ related_post.excerpt|safe }}
+                </div>
+            </div>
+
+            <!-- Footer Section -->
+            <div class="p-4 border-t border-gray-200 flex items-center justify-between">
+                <!-- Message and Like Counts -->
+                <div class="flex items-center space-x-4 text-sm text-gray-500">
+                    <div class="flex items-center">
+                        <svg class="h-5 w-5 text-gray-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 2H4c-1.1 0-2 .9-2 2v16l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"></path>
+                        </svg>
+                        {{ related_post.comments.count }} Comments
+                    </div>
+                </div>
+                <!-- Read More -->
+                <a href="{% url 'post_detail' related_post.slug %}" 
+                   class="text-blue-600 font-medium hover:text-blue-800">
+                    Read More →
+                </a>
             </div>
         </div>
-    {% endfor %}
-    <div class="bg-gray-100 p-4 rounded shadow">
-        <textarea id="new-comment" rows="3" placeholder="Add a comment..." class="w-full p-2 rounded border"></textarea>
-        <button id="send-comment" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200">Send</button>
+        {% endfor %}
     </div>
 </div>
-
-<div class="sticky bottom-0 bg-white p-4 shadow">
-    <button id="like-button" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200">Like</button>
-    <button id="comment-button" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200" onclick="toggleComments()">Comment</button>
-    <button id="share-button" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 transition-colors duration-200">Share</button>
-</div>
-
-<h3 class="text-2xl font-semibold mt-6 mb-2">Related Posts</h3>
-<ul class="list-disc pl-5">
-    {% for related_post in related_posts %}
-        <li>
-            <a href="{% url 'post_detail' related_post.slug %}" class="text-blue-300 hover:underline transition duration-200">{{ related_post.title }}</a>
-        </li>
-    {% endfor %}
-</ul>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    function toggleComments() {
-        const commentsSection = document.getElementById('comments-section');
-        commentsSection.classList.toggle('hidden');
+    function toggleReplyForm(commentId) {
+        const form = document.getElementById(`reply-form-${commentId}`);
+        form.classList.toggle('hidden');
     }
-
-    document.getElementById('send-comment').addEventListener('click', () => {
-        const commentContent = document.getElementById('new-comment').value;
-        if (commentContent.trim() === "") return; // Prevent empty comments
-
- const commentsSection = document.getElementById('comments-section');
-        const newCommentDiv = document.createElement('div');
-        newCommentDiv.className = 'p-4 bg-gray-100 rounded shadow hover:shadow-lg transition-shadow duration-200 comment';
-        
-        newCommentDiv.innerHTML = `
-            <p class="font-semibold text-black">You:</p>
-            <p class="text-black">${commentContent}</p>
-            <button class="edit-comment bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
-            <button class="delete-comment bg-red-500 text-white px-2 py-1 rounded">Delete</button>
-            <button class="reply-comment bg-blue-500 text-white px-2 py-1 rounded">Reply</button>
-            <div class="reply-form hidden">
-                <form method="post" class="bg-white p-2 rounded shadow">
-                    {% csrf_token %}
-                    <textarea name="reply_content" rows="2" placeholder="Add a reply..." required></textarea>
-                    <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200">Reply</button>
-                </form>
-            </div>
-        `;
-        
-        commentsSection.appendChild(newCommentDiv);
-        document.getElementById('new-comment').value = ''; // Clear the input field
-    });
-
-    document.querySelectorAll('.reply-comment').forEach(button => {
-        button.addEventListener('click', () => {
-            const replyForm = button.closest('.comment').querySelector('.reply-form');
-            replyForm.classList.toggle('hidden');
+    $(document).ready(function() {
+        $('#like-button').click(function() {
+            var slug = $(this).data('slug');
+            $.ajax({
+                url: '/post/' + slug + '/like/',
+                type: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' // Ensure CSRF token is included
+                },
+                success: function(data) {
+                    $('#likes-count').text(data.likes_count);
+                    if (data.liked) {
+                        $('#like-button').text('Unlike');
+                    } else {
+                        $('#like-button').text('Like');
+                    }
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON.error);
+                }
+            });
+        });
+        $('#share-button').click(function() {
+            var url = $(this).data('url');
+            // Copy the URL to clipboard
+            navigator.clipboard.writeText(url).then(function() {
+                alert('Link copied to clipboard: ' + url);
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+    
+            // Toggle share options visibility
+            $('#share-options').toggle();
         });
     });
-
-    document.querySelectorAll('.edit-comment').forEach(button => {
-        button.addEventListener('click', () => {
-            const commentDiv = button.closest('.comment');
-            const commentContent = commentDiv.querySelector('p.text-black');
-            const editTextarea = document.createElement('textarea');
-            editTextarea.value = commentContent.innerText;
-            commentDiv.insertBefore(editTextarea, button);
-            commentContent.style.display = 'none';
-            button.innerText = 'Save';
-            button.classList.remove('edit-comment');
-            button.classList.add('save-comment');
-
-            button.addEventListener('click', () => {
-                commentContent.innerText = editTextarea.value;
-                commentContent.style.display = 'block';
-                editTextarea.remove();
-                button.innerText = 'Edit';
-                button.classList.remove('save-comment');
-                button.classList.add('edit-comment');
+    $(document).ready(function() {
+        $('.like-comment-button').click(function() {
+            var commentId = $(this).data('comment-id');
+            var $this = $(this); // Reference to the button
+    
+            // Determine the current liked state by checking the button's current HTML
+            var isLiked = $this.html().includes('Unlike');
+    
+            // Immediately toggle the button's appearance
+            if (isLiked) {
+                // If currently liked, change to "Unlike" state
+                $this.html('<i class="fas fa-heart holographic"></i> Like');
+            } else {
+                // If currently unliked, change to "Liked" state
+                $this.html('<i class="fas fa-heart text-red-500"></i> Unlike');
+            }
+    
+            // Send AJAX request to update the like status
+            $.ajax({
+                url: '/comment/' + commentId + '/like/',  // Ensure the URL is correct
+                type: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' // Ensure CSRF token is included
+                },
+                success: function(data) {
+                    if (data.success) {
+                        // Update the likes count displayed on the page
+                        $('#likes-count-' + commentId).text(data.likes_count); // Update likes count
+                        
+                        // Toggle the button's appearance based on the liked status
+                        if (data.liked) {
+                            // User has liked the comment
+                            $this.html('<i class="fas fa-heart text-red-500"></i> Unlike');
+                        } else {
+                            // User has unliked the comment
+                            $this.html('<i class="fas fa-heart holographic"></i> Like');
+                        }
+                    }
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON.error); // Display error message
+                }
             });
         });
     });
-
-    document.querySelectorAll('.delete-comment').forEach(button => {
-        button.addEventListener('click', () => {
-            const commentDiv = button.closest('.comment');
-            commentDiv.remove();
+    document.addEventListener('DOMContentLoaded', function () {
+        // Handle reply button click
+        document.querySelectorAll('.reply-button').forEach(button => {
+            button.addEventListener('click', function () {
+                const commentId = this.getAttribute('data-comment-id');
+                document.querySelector(`#reply-form-${commentId}`).style.display = 'block';
+            });
+        });
+    
+        // Handle comment/reply submission
+        document.querySelectorAll('.reply-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+    
+                const formData = new FormData(this);
+                formData.append('parent_id', this.getAttribute('id').split('-')[2]);
+    
+                fetch("{% url 'add_comment' post.slug %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.comment_id) {
+                            const parentDiv = document.querySelector(`#comment-${data.parent_id} .replies`) || document.getElementById('comments-section');
+                            parentDiv.insertAdjacentHTML('beforeend', `
+                                <div class="comment" id="comment-${data.comment_id}">
+                                    <p><strong>${data.user}</strong>: ${data.content}</p>
+                                    <small>${data.created_at}</small>
+                                </div>
+                            `);
+                        } else {
+                            alert('Error adding comment');
+                        }
+                    });
+            });
         });
     });
-</script>
+    
+    </script>
+
 {% endblock %}
