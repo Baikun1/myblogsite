@@ -39,4 +39,9 @@ urlpatterns = [
 
     path('user/<str:username>/', user_dashboard, name='user_dashboard'),
 
+    path('user-management/', user_management, name='user_management'),
+
+    path('api/subscribe/', subscribe, name='subscribe'),
+    path('developing', developing, name='devlopming')
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

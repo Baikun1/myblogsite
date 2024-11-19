@@ -10,7 +10,8 @@ from django.utils.text import slugify
 import random
 from django.core.paginator import Paginator
 from django.db.models import Count
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from .models import (
     BlogPost,
     Comment,
@@ -35,60 +36,17 @@ from django.db.models import Q
 
 from django.db.models import Q, Count
 
-# def home(request):
-#     # Fetch category and order query parameters
-#     query = request.GET.get('q', '')  # Get the search query from the URL
-#     search_results = BlogPost.objects.none()  # Default to no results
+@csrf_exempt
+@login_required
+def subscribe(request):
+    if request.method == 'POST':
+        user = request.user
+        # Logic to register the user as a subscriber
+        user.is_subscribed = True  # Example field, modify as needed
+        user.save()
+        return JsonResponse({'success': True})
 
-#     # Check if there's a search query
-#     if query:
-#         posts = posts.filter(
-#             Q(title__icontains=query) | Q(content__icontains=query),
-#             published=True
-#         ).annotate(likes_count=Count('likes'), comments_count=Count('comments'))
-#     category_slug = request.GET.get('category')
-#     order = request.GET.get('order', 'recent')
-
-#     # Base query for published posts
-#     posts = BlogPost.objects.filter(published=True)
-
-#     # Filter by category if a category is selected
-#     if category_slug:
-#         posts = posts.filter(category__slug=category_slug)
-
-#     # Order posts
-#     if order == 'most_liked':
-#         posts = posts.annotate(likes_count=Count('likes')).order_by('-likes_count')
-#     elif order == 'most_commented':
-#         posts = posts.annotate(comments_count=Count('comments')).order_by('-comments_count')
-#     elif order == 'most_viewed':
-#         posts = posts.order_by('-views_count')
-#     else:  # Default: 'recent'
-#         posts = posts.order_by('-created_at')
-
-#     # Pagination for filtered posts
-#     paginator = Paginator(posts, 12)  # Show 12 posts per page
-#     page_number = request.GET.get('page')
-#     paginated_posts = paginator.get_page(page_number)
-
-#     # Featured posts (top 3 by views)
-#     featured_posts = BlogPost.objects.filter(published=True)\
-#         .annotate(likes_count=Count('likes'), comments_count=Count('comments'))\
-#         .order_by('-views_count')[:3]
-
-#     # Pass categories for filter dropdown
-#     categories = Category.objects.all()
-
-#     context = {
-#         'posts': paginated_posts,
-#         'featured_posts': featured_posts,
-#         'categories': categories,
-#         'selected_category': category_slug,
-#         'selected_order': order,
-#         'query': query,
-#         'search_results': search_results,
-#     }
-#     return render(request, 'home.html', context)
+    return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
 
 def home(request):
     query = request.GET.get('q', '')
@@ -444,16 +402,6 @@ def get_dashboard_template(role):
     
     return template, context
 
-
-@login_required
-def delete_user(request, user_id):
-    user = get_object_or_404(User, id=user_id)
-    if request.method == 'POST':
-        user.delete()
-        return redirect('admin_dashboard')  # Redirect to the admin dashboard after deletion
-    return render(request, 'confirm_delete.html', {'user': user}) 
-
-
 @user_passes_test(lambda u: u.is_superuser)
 def admin_dashboard(request):
     users = User.objects.all().order_by('-date_joined')
@@ -502,6 +450,16 @@ def profile_settings(request, username):
     return render(request, 'blog/profile_settings.html', {'form': form, 'user': user})
 
 @login_required
+def delete_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        user.delete()
+        return redirect('admin_dashboard')  # Redirect to the admin dashboard after deletion
+    return render(request, 'confirm_delete.html', {'user': user}) 
+
+
+
+@login_required
 def submit_contact_suggestion(request):
     if request.method == 'POST':
         form = ContactSuggestionForm(request.POST)
@@ -536,3 +494,5 @@ def register_view(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
+def developing(request):
+    return render(request, 'developing.html')

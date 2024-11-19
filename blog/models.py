@@ -24,6 +24,12 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField()

@@ -73,9 +73,9 @@
                 <div class="hidden md:flex items-center space-x-6">
                     <a href="https://baikun1.github.io/portfolio1/"
                         class="text-gray-600 hover:text-gray-800 transition">About Me</a>
-                    <a href="#learn-with-me" class="text-gray-600 hover:text-gray-800 transition">Learn with Me</a>
-                    <a href="./underdevelopment.html" class="text-gray-600 hover:text-gray-800 transition">Practice</a>
-                    <a href="#blog-section" class="text-gray-600 hover:text-gray-800 transition">Blog</a>
+                    <a href="{% url 'devlopming' %}" class="text-gray-600 hover:text-gray-800 transition">Learn with Me</a>
+                    <a href="{% url 'devlopming' %}" class="text-gray-600 hover:text-gray-800 transition">Practice</a>
+                    <a href="{% url 'devlopming' %}" class="text-gray-600 hover:text-gray-800 transition">Blog</a>
                 </div>
                 <div class="flex items-center space-x-3">
                     {% if user.is_authenticated %}

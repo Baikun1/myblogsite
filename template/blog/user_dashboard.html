@@ -16,6 +16,16 @@
                 <a href="{% url 'profile_settings' user.username %}" class="text-blue-500 hover:underline mt-2 inline-block">Edit Profile</a>
             </div>
         </header>
+        <div class="notifications">
+            <h2 class="text-xl font-semibold">Notifications</h2>
+            <ul>
+                {% for notification in user.notifications.all %}
+                    <li class="p-2 border-b">{{ notification.message }} <small>{{ notification.timestamp }}</small></li>
+                {% empty %}
+                    <li>No notifications.</li>
+                {% endfor %}
+            </ul>
+        </div>
         
         <!-- Card for Total Stats -->
         <section class="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
