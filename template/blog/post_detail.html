@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6" style="position: relative;">
+    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="rounded sticky-image" style="width: 100%; height: auto; max-height: 400px; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+    <div class="content p-6 rounded" style="max-width: 800px; transition: background-color 0.3s ease;">
+        <h1 class="text-4xl font-bold mb-4 ">{{ post.title }}</h1>
+        <p class="text-lg mb-4 ">{{ post.content|safe }}</p>
+        <p class="text-lg">Views: <span class="font-semibold">{{ post.views_count }}</span></p>
+    </div>
+</div>
+
+<h2 class="text-3xl font-semibold mt-6 mb-2">Comments</h2>
+<div class="space-y-4 bg-white p-4 rounded shadow hidden" id="comments-section">
+    {% for comment in comments %}
+        <div class="p-4 bg-gray-100 rounded shadow hover:shadow-lg transition-shadow duration-200 comment" data-comment-id="{{ comment.id }}">
+            <p class="font-semibold text-black">{{ comment.user.username }}:</p>
+            <p class="text-black">{{ comment.content }}</p>
+            <button class="edit-comment bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
+            <button class="delete-comment bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+            <button class="reply-comment bg-blue-500 text-white px-2 py-1 rounded">Reply</button>
+            <div class="reply-form hidden">
+                <form method="post" class="bg-white p-2 rounded shadow">
+                    {% csrf_token %}
+                    <textarea name="reply_content" rows="2" placeholder="Add a reply..." required></textarea>
+                    <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200">Reply</button>
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+    <div class="bg-gray-100 p-4 rounded shadow">
+        <textarea id="new-comment" rows="3" placeholder="Add a comment..." class="w-full p-2 rounded border"></textarea>
+        <button id="send-comment" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200">Send</button>
+    </div>
+</div>
+
+<div class="sticky bottom-0 bg-white p-4 shadow">
+    <button id="like-button" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200">Like</button>
+    <button id="comment-button" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200" onclick="toggleComments()">Comment</button>
+    <button id="share-button" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 transition-colors duration-200">Share</button>
+</div>
+
+<h3 class="text-2xl font-semibold mt-6 mb-2">Related Posts</h3>
+<ul class="list-disc pl-5">
+    {% for related_post in related_posts %}
+        <li>
+            <a href="{% url 'post_detail' related_post.slug %}" class="text-blue-300 hover:underline transition duration-200">{{ related_post.title }}</a>
+        </li>
+    {% endfor %}
+</ul>
+
+<script>
+    function toggleComments() {
+        const commentsSection = document.getElementById('comments-section');
+        commentsSection.classList.toggle('hidden');
+    }
+
+    document.getElementById('send-comment').addEventListener('click', () => {
+        const commentContent = document.getElementById('new-comment').value;
+        if (commentContent.trim() === "") return; // Prevent empty comments
+
+ const commentsSection = document.getElementById('comments-section');
+        const newCommentDiv = document.createElement('div');
+        newCommentDiv.className = 'p-4 bg-gray-100 rounded shadow hover:shadow-lg transition-shadow duration-200 comment';
+        
+        newCommentDiv.innerHTML = `
+            <p class="font-semibold text-black">You:</p>
+            <p class="text-black">${commentContent}</p>
+            <button class="edit-comment bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
+            <button class="delete-comment bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+            <button class="reply-comment bg-blue-500 text-white px-2 py-1 rounded">Reply</button>
+            <div class="reply-form hidden">
+                <form method="post" class="bg-white p-2 rounded shadow">
+                    {% csrf_token %}
+                    <textarea name="reply_content" rows="2" placeholder="Add a reply..." required></textarea>
+                    <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200">Reply</button>
+                </form>
+            </div>
+        `;
+        
+        commentsSection.appendChild(newCommentDiv);
+        document.getElementById('new-comment').value = ''; // Clear the input field
+    });
+
+    document.querySelectorAll('.reply-comment').forEach(button => {
+        button.addEventListener('click', () => {
+            const replyForm = button.closest('.comment').querySelector('.reply-form');
+            replyForm.classList.toggle('hidden');
+        });
+    });
+
+    document.querySelectorAll('.edit-comment').forEach(button => {
+        button.addEventListener('click', () => {
+            const commentDiv = button.closest('.comment');
+            const commentContent = commentDiv.querySelector('p.text-black');
+            const editTextarea = document.createElement('textarea');
+            editTextarea.value = commentContent.innerText;
+            commentDiv.insertBefore(editTextarea, button);
+            commentContent.style.display = 'none';
+            button.innerText = 'Save';
+            button.classList.remove('edit-comment');
+            button.classList.add('save-comment');
+
+            button.addEventListener('click', () => {
+                commentContent.innerText = editTextarea.value;
+                commentContent.style.display = 'block';
+                editTextarea.remove();
+                button.innerText = 'Edit';
+                button.classList.remove('save-comment');
+                button.classList.add('edit-comment');
+            });
+        });
+    });
+
+    document.querySelectorAll('.delete-comment').forEach(button => {
+        button.addEventListener('click', () => {
+            const commentDiv = button.closest('.comment');
+            commentDiv.remove();
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-10">
+    <h1 class="text-2xl font-bold mb-4">Confirm Deletion</h1>
+    <p>Are you sure you want to delete the post titled "{{ post.title }}"?</p>
+    <form action="{% url 'delete_post' post.slug %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-600">Delete</button>
+        <a href="{% url 'user_dashboard' %}" class="bg-gray-300 text-black font-semibold py-2 px-4 rounded hover:bg-gray-400">Cancel</a>
+    </form>
+</div>
+{% endblock %}

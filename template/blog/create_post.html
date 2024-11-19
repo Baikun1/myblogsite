@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Create a New Blog Post
+{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto mt-10">
+    <h1 class="text-3xl font-bold mb-6">Create a New Blog Post</h1>
+    <form method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-md">
+        {% csrf_token %}
+        
+        <div class="mb-4">
+            <label for="id_title" class="block text-sm font-medium text-gray-700">Title:</label>
+            <input type="text" name="title" id="id_title" value="{{ form.title.value }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Enter post title" required>
+            {{ form.title.errors }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_content" class="block text-sm font-medium text-gray-700">Content:</label>
+            <div id="editor" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" style="height: 200px;">
+                {{ form.content.value }}
+            </div>
+            <input type="hidden" name="content" id="id_content" required>
+            {{ form.content.errors }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_category" class="block text-sm font-medium text-gray-700">Category:</label>
+            <select name="category" id="id_category" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                {% for category in form.category.field.queryset %}
+                    <option value="{{ category.id }}" {% if category.id == form.category.value %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            {{ form.category.errors }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_featured_image" class="block text-sm font-medium text-gray-700">Featured Image:</label>
+            <input type="file" name="featured_image" id="id_featured_image" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
+            {{ form.featured_image.errors }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_published" class="flex items-center">
+                <input type="checkbox" name="published" id="id_published" class="mr-2" {% if form.published.value %}checked{% endif %}>
+                <span class="text-sm font-medium text-gray-700">Published:</span>
+            </label>
+            {{ form.published.errors }}
+        </div>
+
+        <button type="submit" class="mt-4 bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600">Create Post</button>
+    </form>
+</div>
+
+<!-- Include Quill library -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+    // Initialize Quill editor
+    var quill = new Quill('#editor', {
+        theme: 'snow'
+    });
+
+    // Update the hidden input field when the form is submitted
+    document.querySelector('form').onsubmit = function() {
+        var content = quill.root.innerHTML;
+        document.querySelector('#id_content').value = content;
+    };
+</script>
+{% endblock %}

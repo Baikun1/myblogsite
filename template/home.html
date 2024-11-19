@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% block title %}My Blog{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .learn-card,
+        .practice-card,
+        .blog-card {
+            transition: transform 0.3s ease;
+        }
+
+        .learn-card:hover,
+        .practice-card:hover,
+        .blog-card:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <section class="relative bg-gradient-to-br from-blue-900 to-indigo-800 text-white overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-50"></div>
+        <div class="absolute inset-0 bg-cover bg-center"
+            style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+        </div>
+
+        <div class="container mx-auto px-4 py-24 md:py-32 relative z-11">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <!-- Left Side: Company Info -->
+                <div class="w-full md:w-1/2 mb-12 md:mb-0">
+                    <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                        Learn from my coding journey
+                    </h1>
+                    <p class="text-xl mb-8 text-gray-300">Join me as I learn, grow, and share my experiences in
+                        the world of technology</p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="#"
+                            class="bg-white text-blue-900 font-semibold px-8 py-3 rounded-full hover:bg-blue-100 transition duration-300 text-center">Subscribe</a>
+                        <a href="./underdevelopment.html"
+                            class="border-2 border-white text-white font-semibold px-8 py-3 rounded-full hover:bg-white hover:text-blue-900 transition duration-300 text-center">Learn
+                            More</a>
+                    </div>
+                </div>
+
+                <!-- Right Side: Features -->
+                <div class="w-full md:w-1/2 md:pl-12">
+                    <div
+                        class="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-xl p-8 shadow-2xl">
+                        <h2 class="text-2xl font-semibold mb-6">What to Expect?</h2>
+                        <ul class="space-y-4">
+                            <li class="flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-yellow-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                <span>Insights on the latest tech trends and innovations</span>
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-green-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                                    </path>
+                                </svg>
+                                <span>Personal anecdotes and lessons learned from my coding journey
+                                </span>
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-purple-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01">
+                                    </path>
+                                </svg>
+                                <span>Practical tutorials and guides on programming and web development</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Decorative Element -->
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
+                    fill="white" />
+            </svg>
+        </div>
+    </section>
+<!-- Featured Posts -->
+<div class="container mx-auto py-16">
+    <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Featured Posts</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for post in featured_posts %}
+        <div class="bg-white rounded-lg shadow-lg p-6 learn-card min-h-[300px] max-h-[400px]"> <!-- Added min-h and max-h -->
+            {% if post.featured_image %}
+                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="h-48 w-full object-cover rounded-t-lg mb-4">
+            {% else %}
+                <img src="https://via.placeholder.com/400" alt="Placeholder Image" class="h-48 w-full object-cover rounded-t-lg mb-4">
+            {% endif %}
+            <!-- Post Category -->
+            <p class="text-sm text-blue-500 mb-1">{{ post.category.name }}</p>
+            <h3 class="text-xl font-semibold mb-2">
+                <a href="{% url 'post_detail' post.slug %}" class="hover:underline">{{ post.title }}</a>
+            </h3>
+            <div class="text-gray-600">{{ post.excerpt|safe }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Recent Posts -->
+<div class="container mx-auto py-16">
+    <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Recent Posts</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for post in recent_posts %}
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+            <!-- Image Section -->
+            {% if post.featured_image %}
+                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="h-48 w-full object-cover">
+            {% else %}
+                <img src="https://via.placeholder.com/400" alt="Placeholder Image" class="h-48 w-full object-cover">
+            {% endif %}
+
+            <!-- Content Section -->
+            <div class="p-6 flex flex-col flex-grow">
+                <!-- User Profile -->
+                <div class="flex items-center mb-4">
+                    <img src="{{ post.author.profile_picture.url }}" alt="{{ post.author.name }}" 
+                         class="h-10 w-10 rounded-full object-cover mr-3">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800">{{ post.author.name }}</p>
+                        <p class="text-xs text-gray-500">Published on {{ post.published_date }}</p>
+                    </div>
+                </div>
+
+                <!-- Post Category and Title -->
+                <p class="text-sm text-blue-500 mb-2 font-medium uppercase tracking-wide">
+                    {{ post.category.name }}
+                </p>
+                <h3 class="text-xl font-semibold mb-4 text-gray-800 hover:text-blue-600">
+                    <a href="{% url 'post_detail' post.slug %}" class="hover:underline">
+                        {{ post.title }}
+                    </a>
+                </h3>
+
+                <!-- Post Excerpt -->
+                <div class="text-gray-600 text-sm leading-relaxed mb-4">
+                    {{ post.excerpt|safe }}
+                </div>
+            </div>
+
+            <!-- Footer Section -->
+            <div class="p-4 border-t border-gray-200 flex items-center justify-between">
+                <!-- Message and Like Counts -->
+                <div class="flex items-center space-x-4 text-sm text-gray-500">
+                    <div class="flex items-center">
+                        <svg class="h-5 w-5 text-blue-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                        </svg>
+                        {{ post.likes }} Likes
+                    </div>
+                    <div class="flex items-center">
+                        <svg class="h-5 w-5 text-gray-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 2H4c-1.1 0-2 .9-2 2v16l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"></path>
+                        </svg>
+                        {{ post.messages_count }} Messages
+                    </div>
+                </div>
+                <!-- Read More -->
+                <a href="{% url 'post_detail' post.slug %}" 
+                   class="text-blue-600 font-medium hover:text-blue-800">
+                    Read More →
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+    </main>
+</body>
+
+</html>
+{% endblock %}

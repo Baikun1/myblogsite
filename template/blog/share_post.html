@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Share Post{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 bg-white rounded-lg shadow-md">
+    <h1 class="text-2xl font-bold mb-4 text-gray-800">Share Post: {{ post.title }}</h1>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {{ form.as_p|add_class:"border border-gray-300 p-2 rounded-md w-full" }}
+        <button type="submit" class="w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600 transition duration-200">
+            Share Post
+        </button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto p-6 bg-white rounded-lg shadow-md">
+    <header class="flex items-center justify-between mb-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Welcome to Your Dashboard, {{ user_email }}</h1>
+            {% if profile_picture %}
+                <img src="{{ profile_picture }}" alt="Profile Picture" class="w-12 h-12 rounded-full mt-2">
+            {% endif %}
+        </div>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-600">Logout</button>
+        </form>
+    </header>
+
+    <section class="mb-6">
+        <h2 class="text-xl font-semibold text-gray-700">Your Draft Posts</h2>
+        <ul class="mt-2">
+            {% for post in draft_posts %}
+                <li class="bg-gray-100 p-2 rounded mb-2">
+                    {{ post.title }} - <a href="{% url 'edit_post' post.id %}" class="text-blue-500 hover:underline">Edit</a>
+                </li>
+            {% empty %}
+                <li class="text-gray-500">No draft posts available.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section class="mb-6">
+        <h2 class="text-xl font-semibold text-gray-700">Your Published Posts</h2>
+        <ul class="mt-2">
+            {% for post in published_posts %}
+            <li class="bg-gray-100 p-2 rounded mb-2">
+                {{ post.title }} -     
+                <a href="{% url 'edit_post' post.slug %}" class="text-blue-500 hover:underline">
+                    <i class="fas fa-pen"></i>
+                </a>
+                <form action="{% url 'delete_post' post.slug %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="text-red-500 hover:underline">
+                        <i class="fas fa-trash"></i> 
+                    </button>
+                </form>
+            </li>
+            {% empty %}
+                <li class="text-gray-500">No published posts available.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section>
+        <h2 class="text-xl font-semibold text-gray-700">Your Liked Posts</h2>
+        <ul class="mt-2">
+            {% for post in liked_posts %}
+                <li class="bg-gray-100 p-2 rounded mb-2">{{ post.title }}</li>
+            {% empty %}
+                <li class="text-gray-500">No liked posts available.</li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+{% endblock %}
