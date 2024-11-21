@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
+{% load tz %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Blog{% endblock %}</title>
+
+    <meta name="title" content="Your Blog Title - A Blog About Various Topics">
+    <meta name="description" content="This blog is dedicated to sharing knowledge, resources, and insights on various topics. Join us on this journey of learning and discovery!">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Your Blog Title - A Blog About Various Topics">
+    <meta property="og:description" content="This blog is dedicated to sharing knowledge, resources, and insights on various topics. Join us on this journey of learning and discovery!">
+    
+    
+
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
@@ -65,13 +75,7 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div class="hidden md:flex items-center space-x-6">
-                    <a href="https://baikun1.github.io/portfolio1/"
-                        class="text-gray-600 hover:text-gray-800 transition">About Me</a>
-                    <a href="{% url 'devlopming' %}" class="text-gray-600 hover:text-gray-800 transition">Learn with Me</a>
-                    <a href="{% url 'devlopming' %}" class="text-gray-600 hover:text-gray-800 transition">Practice</a>
-                    <a href="{% url 'devlopming' %}" class="text-gray-600 hover:text-gray-800 transition">Blog</a>
-                </div>
+
                 <div class="flex items-center space-x-3">
                     {% if user.is_authenticated %}
                     <a href="{% url 'create_post' %}"
@@ -80,10 +84,10 @@
                     </a>
                     <a href="{% url 'profile' user.username %}" class="flex items-center space-x-2">
                         {% if user.profile_picture %}
-                            <img src="{{ user.profile_picture.url }}" alt="Profile Photo"
-                                 class="w-10 h-10 rounded-full border-2 border-gray-300" />
+                            <img src="{{ user.profile_picture.url }}" alt="Profile photo of {{ user.username }}" loading="lazy"
+                            class="w-10 h-10 rounded-full border-2 border-gray-300" />
                         {% else %}
-                            <img src="{% static 'user/profilpicdefault.png' %}" alt="Default Profile Photo"
+                            <img src="{% static 'user/profilpicdefault.png' %}" alt="Default Profile Photo" loading="lazy"
                                  class="w-10 h-10 rounded-full border-2 border-gray-300" />
                         {% endif %}
                         <span class="hidden md:block text-gray-600 hover:text-gray-800">
@@ -114,67 +118,83 @@
         {% block content %}{% endblock %}
     </main>
 
-<footer class="bg-gray-800 text-white mt-20">
-    <div class="max-w-7xl mx-auto px-4 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-                <h3 class="text-xl font-bold mb-4">About This Blog</h3>
-                <p>This blog is dedicated to sharing knowledge, resources, and insights on various topics. Join us on this journey of learning and discovery!</p>
+    <footer class="bg-gray-800 text-white mt-20">
+        <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">About This Blog</h3>
+                    <p>This blog is dedicated to sharing knowledge, resources, and insights on various topics. Join us on this journey of learning and discovery!</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Categories</h3>
+                    <ul>
+                        {% for category in categories %}
+                        <li class="mb-2">
+                            <a href="{% url 'category' category.slug %}" class="hover:text-gray-300 transition flex items-center">
+                                {{ category.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">My Work / Tools</h3>
+                    <ul>
+                        <li class="mb-2">
+                            <a href="https://stichfit.pythonanywhere.com/" class="hover:text-gray-300 transition flex items-center">
+                                Tailoring E-commerce Website
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="https://baikuntha.pythonanywhere.com/login/" class="hover:text-gray-300 transition flex items-center">
+                                To Do List Website
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'tools' %}" class="hover:text-gray-300 transition flex items-center">
+                                Tools
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Follow Me</h3>
+                    <ul>
+                        <li class="mb-2">
+                            <a href="https://www.linkedin.com/in/baikuntha-behera-6b255220b/" class="hover:text-gray-300 transition flex items-center">
+                                <i class="fab fa-linkedin mr-2"></i> LinkedIn
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="https://www.instagram.com/baikunthabehera5/" class="hover:text-gray-300 transition flex items-center">
+                                <i class="fab fa-instagram mr-2"></i> Instagram
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="https://github.com/baikun1" class="hover:text-gray-300 transition flex items-center">
+                                <i class="fab fa-github mr-2"></i> GitHub
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="https://baikun1.github.io/portfolio1/" class="hover:text-gray-300 transition flex items-center">
+                                <i class="fas fa-briefcase mr-2"></i> Portfolio
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="mailto:bbaikuntha87@gmail.com" class="hover:text-gray-300 transition flex items-center">
+                                <i class="fas fa-envelope mr-2"></i> Email Me
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div>
-                <h3 class="text-xl font-bold mb-4">Categories</h3>
-                <ul>
-                    {% for category in categories %}
-                    <li class="mb-2">
-                        <a href="{% url 'category' category.slug %}" class="hover:text-gray-300 transition flex items-center">
-                            {{ category.name }}
-                        </a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div>
-                <h3 class="text-xl font-bold mb-4">Tools</h3>
-                <ul>
-                    <li class="mb-2">
-                        <a href="https://github.com/baikun1" class="hover:text-gray-300 transition flex items-center">
-                            <i class="fab fa-github mr-2"></i> GitHub
-                        </a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="https://baikun1.github.io/portfolio1/" class="hover:text-gray-300 transition flex items-center">
-                            <i class="fas fa-briefcase mr-2"></i> Portfolio
-                        </a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="mailto:bbaikuntha87@gmail.com" class="hover:text-gray-300 transition flex items-center">
-                            <i class="fas fa-envelope mr-2"></i> Email Me
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div>
-                <h3 class="text-xl font-bold mb-4">Follow Me</h3>
-                <ul>
-                    <li class="mb-2">
-                        <a href="https://linkedin.com/in/your_linkedin" class="hover:text-gray-300 transition flex items-center">
-                            <i class="fab fa-linkedin mr-2"></i> LinkedIn
-                        </a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="https://www.instagram.com/your_instagram" class="hover:text-gray-300 transition flex items-center">
-                            <i class="fab fa-instagram mr-2"></i> Instagram
-                        </a>
-                    </li>
-                </ul>
+            <hr class="my-8 border-gray-600" /> 
+            <div class="text-center">
+                {% now "Y" as current_year %}
+                <p class="text-sm">© {{ current_year }} Baikuntha. All rights reserved.</p>
             </div>
         </div>
-        <hr class="my-8 border-gray-600" /> 
-        <div class="text-center">
-            <p class="text-sm">© {{ current_year }} Your Blog Name. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
+    </footer>
 </body>
 
 <script>

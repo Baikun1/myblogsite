@@ -34,7 +34,6 @@
 
         <div class="container mx-auto px-4 py-24 md:py-32 relative z-11">
             <div class="flex flex-col md:flex-row items-center justify-between">
-                <!-- Left Side: Company Info -->
                 <div class="w-full md:w-1/2 mb-12 md:mb-0">
                     <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
                         Learn from Our journey
@@ -50,7 +49,6 @@
                     </div>
                 </div>
 
-                <!-- Right Side: Features -->
                 <div class="w-full md:w-1/2 md:pl-12">
                     <div class="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-xl p-8 shadow-2xl transition-transform duration-300 transform hover:scale-105">
                         <h2 class="text-2xl font-semibold mb-6">What to Expect from Our Blog?</h2>
@@ -95,7 +93,6 @@
             </svg>
         </div>
     </section>
-<!-- Featured Posts -->
 <div class="container mx-auto py-16">
     <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Featured Posts</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -179,9 +176,7 @@
 <div class="container mx-auto py-16">
     <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Blog Posts</h2>
 
-    <!-- Filters Section -->
     <div class="flex flex-wrap justify-end items-center mb-8 space-x-4">
-        <!-- Category Filter -->
         <select id="category-filter" onchange="applyFilters()" class="border rounded-lg py-2 px-4 h-12">
             <option value="">All Categories</option>
             {% for category in categories %}
@@ -191,7 +186,6 @@
             {% endfor %}
         </select>
 
-        <!-- Order Filter -->
         <select id="order-filter" onchange="applyFilters()" class="border rounded-lg py-2 px-4 h-12">
             <option value="recent" {% if selected_order == 'recent' %}selected{% endif %}>Recent</option>
             <option value="most_liked" {% if selected_order == 'most_liked' %}selected{% endif %}>Most Liked</option>
@@ -217,11 +211,9 @@
         </form>
     </div>
 
-    <!-- Posts Section -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for post in posts %}
         <div class="bg-white rounded-lg overflow-hidden flex flex-col transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
-            <!-- Image Section -->
             {% if post.featured_image %}
                 <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="h-48 w-full object-cover">
             {% else %}
@@ -229,7 +221,6 @@
             {% endif %}
 
             <div class="p-6 flex flex-col flex-grow">
-                <!-- User Profile -->
                 <div class="flex items-center mb-4">
                     <a href="{% url 'user_dashboard' post.author.username %}">
                         <img src="{% if post.author.profile_picture and post.author.profile_picture.url %}{{ post.author.profile_picture.url }}{% else %}{{ STATIC_URL }}user/profilpicdefault.png{% endif %}" 
@@ -242,7 +233,6 @@
                     </div>
                 </div>
 
-                <!-- Post Category and Title -->
                 <p class="text-sm text-blue-500 mb-2 font-medium uppercase tracking-wide">
                     {{ post.category.name }}
                 </p>
@@ -252,7 +242,6 @@
                     </a>
                 </h3>
 
-                <!-- Post Excerpt -->
                 <div class="text-gray-600 text-sm leading-relaxed mb-4">
                     {{ post.excerpt|safe }}
                 </div>
@@ -282,7 +271,6 @@
                     </div>
                     
                 </div>
-                <!-- Read More -->
                 <a href="{% url 'post_detail' post.slug %}" 
                    class="text-blue-600 font-medium hover:text-blue-800">
                     Read More →
@@ -306,24 +294,6 @@
         </ul>
     </div>
     
-    <!-- Pagination
-    <div class="mt-8">
-        {% if posts.has_other_pages %}
-        <div class="flex justify-center">
-            {% if posts.has_previous %}
-            <a href="?page={{ posts.previous_page_number }}" class="px-4 py-2">Previous</a>
-            {% endif %}
-            {% for num in posts.paginator.page_range %}
-            <a href="?page={{ num }}" class="px-4 py-2 {% if posts.number == num %}bg-blue-600 text-white{% endif %}">
-                {{ num }}
-            </a>
-            {% endfor %}
-            {% if posts.has_next %}
-            <a href="?page={{ posts.next_page_number }}" class="px-4 py-2">Next</a>
-            {% endif %}
-        </div>
-        {% endif %}
-    </div> -->
 </div>
 
 
@@ -331,7 +301,7 @@
 </main>
 <script>
     document.getElementById('subscribe-button').addEventListener('click', function(event) {
-        event.preventDefault(); // Prevent default anchor behavior
+        event.preventDefault(); 
     
         const button = this;
         const isSubscribed = button.getAttribute('data-subscribed') === 'true';
@@ -340,7 +310,7 @@
             button.textContent = 'Subscribed';
             button.setAttribute('data-subscribed', 'true');
             button.classList.remove('bg-white', 'text-blue-900');
-            button.classList.add('bg-blue-600', 'text-white'); // Change style to indicate subscription
+            button.classList.add('bg-blue-600', 'text-white'); 
     
             fetch('/api/subscribe/', {
                 method: 'POST',

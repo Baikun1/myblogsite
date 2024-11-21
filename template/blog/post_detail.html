@@ -12,7 +12,6 @@
         <p class="text-lg">Views: <span class="font-semibold">{{ post.views_count }}</span></p>
     </div>
 
-<!-- Buttons for Like and Share -->
 <div class="button-container">
     {% if request.user == post.author %}
     <a href="{% url 'edit_post' post.slug %}" class="btn btn-edit text-yellow-500" aria-label="Edit this post">
@@ -35,11 +34,8 @@
     </button>
 </div>
 
-
-
 <div class="bg-white p-6 rounded-lg shadow-md">
     
-        <!-- New Comment Form -->
     <div class="mt-6 bg-gray-50 p-4 rounded-lg shadow">
         <form method="POST" action="{% url 'post_detail' post.slug %}">
             {% csrf_token %}
@@ -54,7 +50,6 @@
         {% for comment in comments %}
         <div class="comment bg-gray-50 p-4 rounded-lg shadow">
             
-            <!-- Top-level Comment -->
             <div class="flex items-start">
                 <a href="{% url 'user_dashboard' comment.user.username %}" class="mr-3">
                     <img src="{{ comment.user.profile_picture.url }}" alt="{{ comment.user.username }}'s profile picture" class="w-10 h-10 rounded-full">
@@ -90,7 +85,6 @@
                 </div>
             </div>
     
-            <!-- Reply Button -->
             <div class="flex justify-end mt-2">
                 <button class="reply-button flex items-center text-blue-500" onclick="toggleReplyForm({{ comment.id }})">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
@@ -100,7 +94,6 @@
                 </button>
             </div>
     
-            <!-- Reply Form -->
             <div id="reply-form-{{ comment.id }}" class="hidden mt-4">
                 <form method="POST" action="{% url 'reply_comment' comment.id %}">
                     {% csrf_token %}
@@ -109,7 +102,6 @@
                 </form>
             </div>
     
-            <!-- Replies -->
             {% if comment.replies.all %}
             <div class="replies pl-6 mt-4 border-l-2 border-gray-200">
                 {% for reply in comment.replies.all %}
@@ -154,18 +146,15 @@
     {% if related_posts %}
         <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Related Posts</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {% for related_post in related_posts|slice:":6" %}  {# Limit to 6 related posts #}
+            {% for related_post in related_posts|slice:":6" %} 
             <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
-                <!-- Image Section -->
                 {% if related_post.featured_image %}
                     <img src="{{ related_post.featured_image.url }}" alt="{{ related_post.title }}" class="h-48 w-full object-cover">
                 {% else %}
                     <img src="https://via.placeholder.com/400" alt="Placeholder Image" class="h-48 w-full object-cover">
                 {% endif %}
 
-                <!-- Content Section -->
                 <div class="p-6 flex flex-col flex-grow">
-                    <!-- Post Category and Title -->
                     <p class="text-sm text-blue-500 mb-2 font-medium uppercase tracking-wide">
                         {{ related_post.category.name }}
                     </p>
@@ -175,15 +164,12 @@
                         </a>
                     </h3>
 
-                    <!-- Post Excerpt -->
                     <div class="text-gray-600 text-sm leading-relaxed mb-4">
                         {{ related_post.excerpt|safe }}
                     </div>
                 </div>
 
-                <!-- Footer Section -->
                 <div class="p-4 border-t border-gray-200 flex items-center justify-between">
-                    <!-- Message and Like Counts -->
                     <div class="flex items-center space-x-4 text-sm text-gray-500">
                         <div class="flex items-center">
                             <svg class="h-5 w-5 text-gray-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
@@ -192,7 +178,6 @@
                             {{ related_post.comments.count }} Comments
                         </div>
                     </div>
-                    <!-- Read More -->
                     <a href="{% url 'post_detail' related_post.slug %}" 
                        class="text-blue-600 font-medium hover:text-blue-800">
                         Read More →
@@ -201,7 +186,6 @@
             </div>
             {% endfor %}
         </div>
-        {# Pagination for related posts #}
         <div class="mt-8">
             <nav>
                 <ul class="flex justify-center space-x-4">
@@ -228,7 +212,7 @@
                 url: '/post/' + slug + '/like/',
                 type: 'POST',
                 headers: {
-                    'X-CSRFToken': '{{ csrf_token }}' // Ensure CSRF token is included
+                    'X-CSRFToken': '{{ csrf_token }}' 
                 },
                 success: function(data) {
                     $('#likes-count').text(data.likes_count);
@@ -245,64 +229,52 @@
         });
         $('#share-button').click(function() {
             var url = $(this).data('url');
-            // Copy the URL to clipboard
             navigator.clipboard.writeText(url).then(function() {
                 alert('Link copied to clipboard: ' + url);
             }, function(err) {
                 console.error('Could not copy text: ', err);
             });
     
-            // Toggle share options visibility
             $('#share-options').toggle();
         });
     });
     $(document).ready(function() {
         $('.like-comment-button').click(function() {
             var commentId = $(this).data('comment-id');
-            var $this = $(this); // Reference to the button
+            var $this = $(this); 
     
-            // Determine the current liked state by checking the button's current HTML
             var isLiked = $this.html().includes('Unlike');
     
-            // Immediately toggle the button's appearance
             if (isLiked) {
-                // If currently liked, change to "Unlike" state
                 $this.html('<i class="fas fa-heart holographic"></i> Like');
             } else {
-                // If currently unliked, change to "Liked" state
                 $this.html('<i class="fas fa-heart text-red-500"></i> Unlike');
             }
     
-            // Send AJAX request to update the like status
             $.ajax({
-                url: '/comment/' + commentId + '/like/',  // Ensure the URL is correct
+                url: '/comment/' + commentId + '/like/', 
                 type: 'POST',
                 headers: {
-                    'X-CSRFToken': '{{ csrf_token }}' // Ensure CSRF token is included
+                    'X-CSRFToken': '{{ csrf_token }}' 
                 },
                 success: function(data) {
                     if (data.success) {
-                        // Update the likes count displayed on the page
-                        $('#likes-count-' + commentId).text(data.likes_count); // Update likes count
+                        $('#likes-count-' + commentId).text(data.likes_count); 
                         
-                        // Toggle the button's appearance based on the liked status
                         if (data.liked) {
-                            // User has liked the comment
                             $this.html('<i class="fas fa-heart text-red-500"></i> Unlike');
                         } else {
-                            // User has unliked the comment
                             $this.html('<i class="fas fa-heart holographic"></i> Like');
                         }
                     }
                 },
                 error: function(xhr) {
-                    alert(xhr.responseJSON.error); // Display error message
+                    alert(xhr.responseJSON.error); 
                 }
             });
         });
     });
     document.addEventListener('DOMContentLoaded', function () {
-        // Handle reply button click
         document.querySelectorAll('.reply-button').forEach(button => {
             button.addEventListener('click', function () {
                 const commentId = this.getAttribute('data-comment-id');
@@ -310,7 +282,6 @@
             });
         });
     
-        // Handle comment/reply submission
         document.querySelectorAll('.reply-form').forEach(form => {
             form.addEventListener('submit', function (e) {
                 e.preventDefault();

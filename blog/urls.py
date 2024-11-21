@@ -6,7 +6,6 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LoginView, LogoutView
 urlpatterns = [
     path('',home, name='home'),
-    # path('login/', auth_views.LoginView.as_view(), name='login'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('register/',register_view, name='register'),
@@ -17,7 +16,6 @@ urlpatterns = [
     path('profile/<slug:username>/',user_profile, name='profile'),
     path('profile/settings/<slug:username>/', profile_settings, name='profile_settings'),
 
-     # path('contact/', views.submit_contact, name='contact'),
     path('admin/dashboard/',admin_dashboard, name='admin_dashboard'),
     path('admin/delete-user/<int:user_id>/',delete_user, name='delete_user'),
     path('admin/delete_user/<int:user_id>/',delete_user, name='delete_user'),

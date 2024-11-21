@@ -1,23 +1,46 @@
 from django.shortcuts import render
-import json
-import base64
-import markdown
-import re
-from datetime import datetime
+import json, base64,markdown, re, random, string, csv, csv, re, socket, random
 from pytz import timezone, all_timezones
-from datetime import datetime
-import random
-import string
 from urllib.parse import quote, unquote
-import csv
 from io import StringIO
-import csv
-import re
-import socket
 import numpy as np
-import random
+from datetime import datetime
 def home(request):
-    return render(request, 'tools/home.html')
+    tools = [
+        {'name': 'Color Palette Generator', 'url': 'color_palette_generator', 'icon': 'fas fa-palette'},
+        {'name': 'Matrix Determinant', 'url': 'matrix_determinant', 'icon': 'fas fa-th'},
+        {'name': 'Text Summarizer', 'url': 'text_summarizer', 'icon': 'fas fa-file-alt'},
+        {'name': 'DNS Lookup', 'url': 'dns_lookup', 'icon': 'fas fa-globe'},
+        {'name': 'IP Validator', 'url': 'ip_validator', 'icon': 'fas fa-check-circle'},
+        {'name': 'Currency Converter', 'url': 'currency_converter', 'icon': 'fas fa-money-bill'},
+        {'name': 'Length Converter', 'url': 'length_converter', 'icon': 'fas fa-ruler'},
+        {'name': 'Caesar Cipher', 'url': 'caesar_cipher', 'icon': 'fas fa-lock'},
+        {'name': 'Temperature Converter', 'url': 'temperature_converter', 'icon': 'fas fa-thermometer-half'},
+        {'name': 'JSON to CSV', 'url': 'json_to_csv', 'icon': 'fas fa-file-csv'},
+        {'name': 'CSV to JSON', 'url': 'csv_to_json', 'icon': 'fas fa-file-json'},
+        {'name': 'Anagram Checker', 'url': 'anagram_checker', 'icon': 'fas fa-swap'},
+        {'name': 'URL Tool', 'url': 'url_tool', 'icon': 'fas fa-link'},
+        {'name': 'Password Generator', 'url': 'password_generator', 'icon': 'fas fa-key'},
+        {'name': 'Joke Generator', 'url': 'joke_generator', 'icon': 'fas fa-laugh'},
+        {'name': 'Math Quiz', 'url': 'math_quiz', 'icon': 'fas fa-question'},
+        {'name': 'Periodic Table', 'url': 'periodic_table', 'icon': 'fas fa-atom'},
+        {'name': 'Timezone Converter', 'url': 'timezone_converter', 'icon': 'fas fa-clock'},
+        {'name': 'Countdown Timer', 'url': 'countdown_timer', 'icon': 'fas fa-hourglass-half'},
+        {'name': 'Regex Tester', 'url': 'regex_tester', 'icon': 'fas fa-search'},
+        {'name': 'Markdown Previewer', 'url': 'markdown_previewer', 'icon': 'fas fa-file-alt'},
+        {'name': 'Base64 Tool', 'url': 'base64_tool', 'icon': 'fas fa-code'},
+        {'name': 'Unit Converter', 'url': 'unit_converter', 'icon': 'fas fa-ruler-combined'},
+        {'name': 'Age Calculator', 'url': 'age_calculator', 'icon': 'fas fa-calendar-alt'},
+        {'name': 'BMI Calculator', 'url': 'bmi_calculator', 'icon': 'fas fa-weight'},
+        {'name': 'Loan Calculator', 'url': 'loan_calculator', 'icon': 'fas fa-calculator'},
+        {'name': 'Text Counter', 'url': 'text_counter', 'icon': 'fas fa-file-alt'},
+        {'name': 'Case Converter', 'url': 'case_converter', 'icon': 'fas fa-font'},
+        {'name': 'Palindrome Checker', 'url': 'palindrome_checker', 'icon': 'fas fa-check'},
+        {'name': 'Basic Calculator', 'url': 'basic_calculator', 'icon': 'fas fa-calculator'},
+        {'name': 'Prime Checker', 'url': 'prime_checker', 'icon': 'fas fa-check-circle'},
+        {'name': 'JSON Formatter', 'url': 'json_formatter', 'icon': 'fas fa-file-json'},
+    ]
+    return render(request, 'tools/home.html', {'tools': tools})
 
 def color_palette_generator(request):
     palette = None

@@ -22,7 +22,6 @@ class CustomUserChangeForm(UserChangeForm):
         fields = ('username', 'email', 'profile_picture', 'bio')
     def __init__(self, *args, **kwargs):
         super(CustomUserChangeForm, self).__init__(*args, **kwargs)
-        # Add CSS classes to form fields for styling
         self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Username'})
         self.fields['email'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Email'})
         self.fields['profile_picture'].widget.attrs.update({'class': 'form-control-file'})
@@ -43,15 +42,9 @@ class BlogPostForm(forms.ModelForm):
         }
 
     def save(self, commit=True):
-        # Get the instance of the BlogPost
         blog_post = super().save(commit=False)
-
-        # Check if featured_image is empty
         if not blog_post.featured_image:
-            # Query for the most liked or viewed post in the same category
             most_liked_post = BlogPost.objects.filter(category=blog_post.category).order_by('-likes', '-views').first()
-            
-            # If a post is found, set its featured image
             if most_liked_post:
                 blog_post.featured_image = most_liked_post.featured_image
             else:

@@ -2,7 +2,6 @@
     <p><strong>{{ comment.user.username }}</strong>: {{ comment.content }}</p>
     <small>{{ comment.created_at|date:"Y-m-d H:i" }}</small>
 
-    <!-- Reply Form -->
     <button class="reply-button" data-comment-id="{{ comment.id }}">Reply</button>
     <form class="reply-form" id="reply-form-{{ comment.id }}" style="display: none;">
         {% csrf_token %}
@@ -10,7 +9,6 @@
         <button type="submit">Submit</button>
     </form>
 
-    <!-- Nested Replies -->
     <div class="replies">
         {% for reply in comment.replies.all %}
             {% include 'blog/comment.html' with comment=reply %}
