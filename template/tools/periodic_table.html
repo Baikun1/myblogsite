@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Periodic Table</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Symbol</th>
+            <th>Atomic Number</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for element in elements %}
+        <tr>
+            <td>{{ element.name }}</td>
+            <td>{{ element.symbol }}</td>
+            <td>{{ element.atomic_number }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

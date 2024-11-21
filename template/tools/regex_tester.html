@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Regex Tester</h1>
+<form method="POST">
+    {% csrf_token %}
+    <label for="pattern">Regex Pattern:</label>
+    <input type="text" name="pattern" id="pattern" required>
+    <br>
+    <label for="test_string">Test String:</label>
+    <input type="text" name="test_string" id="test_string" required>
+    <br>
+    <button type="submit">Test</button>
+</form>
+
+{% if matches %}
+    <h2>Matches: {{ matches }}</h2>
+{% elif error %}
+    <h2>Error: {{ error }}</h2>
+{% endif %}
+{% endblock %}

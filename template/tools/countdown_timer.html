@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Countdown Timer</h1>
+<form method="POST">
+    {% csrf_token %}
+    <label for="target_date">Target Date (YYYY-MM-DD HH:MM):</label>
+    <input type="text" name="target_date" id="target_date" required>
+    <br>
+    <button type="submit">Start Countdown</button>
+</form>
+
+{% if remaining_time %}
+    <h2>Remaining Time: {{ remaining_time }}</h2>
+{% endif %}
+{% endblock %}

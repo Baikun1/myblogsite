@@ -25,7 +25,7 @@
     </style>
 </head>
 
-<body class="bg-gray-100">
+<body class="">
     <section class="relative bg-gradient-to-br from-blue-900 to-indigo-800 text-white overflow-hidden">
         <div class="absolute inset-0 bg-black opacity-50"></div>
         <div class="absolute inset-0 bg-cover bg-center"
@@ -52,9 +52,8 @@
 
                 <!-- Right Side: Features -->
                 <div class="w-full md:w-1/2 md:pl-12">
-                    <div
-                        class="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-xl p-8 shadow-2xl">
-                        <h2 class="text-2xl font-semibold mb-6">What to Expect?</h2>
+                    <div class="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-xl p-8 shadow-2xl transition-transform duration-300 transform hover:scale-105">
+                        <h2 class="text-2xl font-semibold mb-6">What to Expect from Our Blog?</h2>
                         <ul class="space-y-4">
                             <li class="flex items-center">
                                 <svg class="w-6 h-6 mr-3 text-yellow-400" fill="none" stroke="currentColor"
@@ -71,8 +70,7 @@
                                         d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
                                     </path>
                                 </svg>
-                                <span>Personal anecdotes and lessons learned from my coding journey
-                                </span>
+                                <span>Personal anecdotes and lessons learned from our coding journey</span>
                             </li>
                             <li class="flex items-center">
                                 <svg class="w-6 h-6 mr-3 text-purple-400" fill="none" stroke="currentColor"
@@ -89,7 +87,6 @@
             </div>
         </div>
 
-        <!-- Decorative Element -->
         <div class="absolute bottom-0 left-0 right-0">
             <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -100,17 +97,17 @@
     </section>
 <!-- Featured Posts -->
 <div class="container mx-auto py-16">
-    <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Recent Posts</h2>
+    <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Featured Posts</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for post in featured_posts %}
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+        <div class="bg-white rounded-lg overflow-hidden flex flex-col transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
             <!-- Image Section -->
             {% if post.featured_image %}
                 <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="h-48 w-full object-cover">
             {% else %}
                 <img src="https://via.placeholder.com/400" alt="Placeholder Image" class="h-48 w-full object-cover">
             {% endif %}
-
+    
             <!-- Content Section -->
             <div class="p-6 flex flex-col flex-grow">
                 <!-- User Profile -->
@@ -125,7 +122,7 @@
                         <p class="text-xs text-gray-500">Published on {{ post.created_at }}</p>
                     </div>
                 </div>
-
+    
                 <!-- Post Category and Title -->
                 <p class="text-sm text-blue-500 mb-2 font-medium uppercase tracking-wide">
                     {{ post.category.name }}
@@ -135,13 +132,13 @@
                         {{ post.title }}
                     </a>
                 </h3>
-
+    
                 <!-- Post Excerpt -->
                 <div class="text-gray-600 text-sm leading-relaxed mb-4">
                     {{ post.excerpt|safe }}
                 </div>
             </div>
-
+    
             <!-- Footer Section -->
             <div class="p-4 border-t border-gray-200 flex items-center justify-between">
                 <!-- Message and Like Counts -->
@@ -159,10 +156,10 @@
                         </svg>
                         {{ post.comments.count }} Comments
                     </div>
-
+    
                     <div class="flex items-center">
                         <svg class="h-5 w-5 text-gray-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 3C6.48 3 2 12 2 12s4.48 9 10 9 10-9 10-9-4.48-9-10-9zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm-1-9h2v4h-2zm0 6h2v2h-2z"></path>
+                            <path d="M12 3C6.48 3 2 12 2 12s4.48 9 10 9 10-9 10-9-4.48-9-10-9zm0 15c-3.31 0-6- 2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm-1-9h2v4h-2zm0 6h2v2h-2z"></path>
                         </svg>
                         <span class="views-count">{{ post.views_count }} Views</span>
                     </div>
@@ -223,7 +220,7 @@
     <!-- Posts Section -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for post in posts %}
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+        <div class="bg-white rounded-lg overflow-hidden flex flex-col transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
             <!-- Image Section -->
             {% if post.featured_image %}
                 <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="h-48 w-full object-cover">

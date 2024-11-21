@@ -6,13 +6,53 @@
 <div class="container mx-auto p-6">
     <h1 class="text-2xl font-bold mb-4">Edit Post: {{ post.title }}</h1>
     <form method="post" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        {% csrf_token %}
+        <!-- {% csrf_token %}
         {{ form.as_p }}
         <div class="flex items-center justify-between">
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Update Post
             </button>
+        </div> -->
+        {% csrf_token %}
+        <div class="mb-4">
+            <label for="id_title" class="block text-sm font-medium text-gray-700">Title:</label>
+            <input type="text" name="title" id="id_title" value="{{ form.title.value }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Enter post title" required>
+            {{ form.title.errors }}
         </div>
+
+        <div class="mb-4">
+            <label for="id_content" class="block text-sm font-medium text-gray-700">Content:</label>
+            <div id="editor" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" style="height: 200px;"></div>
+        
+            <input type="hidden" name="content" id="id_content" value="{{ form.content.value|safe }}" required>
+            {{ form.content.errors }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_category" class="block text-sm font-medium text-gray-700">Category:</label>
+            <select name="category" id="id_category" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                {% for category in form.category.field.queryset %}
+                    <option value="{{ category.id }}" {% if category.id == form.category.value %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            {{ form.category.errors }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_featured_image" class="block text-sm font-medium text-gray-700">Featured Image:</label>
+            <input type="file" name="featured_image" id="id_featured_image" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
+            {{ form.featured_image.errors }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_published" class="flex items-center">
+                <input type="checkbox" name="published" id="id_published" class="mr-2" {% if form.published.value %}checked{% endif %}>
+                <span class="text-sm font-medium text-gray-700">Published:</span>
+            </label>
+            {{ form.published.errors }}
+        </div>
+
+        <button type="submit" class="mt-4 bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600">Submit</button>
     </form>
 </div>
 {% endblock %}

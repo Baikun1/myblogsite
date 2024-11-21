@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Color Palette Generator{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-4 text-center">Color Palette Generator</h1>
+        <form id="palette-form" action="{% url 'color_palette_generator' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200">Generate Palette</button>
+        </form>
+        <div id="palette" class="mt-6 grid grid-cols-2 gap-4">
+            {% if palette %}
+                {% for color in palette %}
+                    <div class="h-24 rounded-lg" style="background-color: {{ color }};"></div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center text-gray-500">No colors generated yet. Click the button to generate!</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>JSON Formatter</h1>
+<form method="POST">
+    {% csrf_token %}
+    <label for="json_data">Raw JSON:</label>
+    <textarea name="json_data" id="json_data" rows="10" required></textarea>
+    <br>
+    <button type="submit">Format</button>
+</form>
+
+{% if formatted_json %}
+    <h2>Formatted JSON:</h2>
+    <pre>{{ formatted_json }}</pre>
+{% elif error %}
+    <h2>Error: {{ error }}</h2>
+{% endif %}
+{% endblock %}

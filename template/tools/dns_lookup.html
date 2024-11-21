@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}DNS Lookup Tool{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-4 text-center">DNS Lookup Tool</h1>
+        <form id="dns-lookup-form" action="{% url 'dns_lookup' %}" method="POST">
+            {% csrf_token %}
+            <label for="domain" class="block text-sm font-medium text-gray-700">Enter Domain Name:</label>
+            <input type="text" id="domain" name="domain" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="example.com" required />
+
+            <button type="submit" class="mt-4 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200">Lookup IP Address</button>
+        </form>
+
+        {% if ip_address %}
+            <div class="mt-6">
+                <h2 class="text-lg font-semibold">IP Address:</h2>
+                <p class="text-xl text-blue-600">{{ ip_address }}</p>
+            </div>
+        {% elif error %}
+            <div class="mt-6">
+                <h2 class="text-lg font-semibold text-red-600">Error:</h2>
+                <p class="text-xl">{{ error }}</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

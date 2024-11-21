@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Text Counter</h1>
+<form method="POST">
+    {% csrf_token %}
+    <label for="text">Enter Text:</label>
+    <textarea name="text" id="text" rows="5" required></textarea>
+    <br>
+    <button type="submit">Count</button>
+</form>
+
+{% if word_count is not none %}
+    <h2>Word Count: {{ word_count }}</h2>
+    <h2>Character Count: {{ char_count }}</h2>
+{% endif %}
+{% endblock %}

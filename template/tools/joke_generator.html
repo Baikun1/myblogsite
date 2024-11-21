@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Joke Generator{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-4 text-center">Joke Generator</h1>
+        <form action="{% url 'joke_generator' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="mt-4 w-full bg-blue-500 text-white py-2 rounded">Get a Joke</button>
+        </form>
+        {% if joke %}
+            <div class="mt-6">
+                <h2 class="text-lg font-semibold">Joke:</h2>
+                <p class="text-xl text-blue-600">{{ joke }}</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

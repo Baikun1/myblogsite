@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Case Converter</h1>
+<form method="POST">
+    {% csrf_token %}
+    <label for="text">Text:</label>
+    <input type="text" name="text" id="text" required>
+    <br>
+    <label for="case_type">Convert to:</label>
+    <select name="case_type" id="case_type">
+        <option value="upper">Uppercase</option>
+        <option value="lower">Lowercase</option>
+        <option value="title">Title Case</option>
+    </select>
+    <br>
+    <button type="submit">Convert</button>
+</form>
+
+{% if converted_text %}
+    <h2>Converted Text: {{ converted_text }}</h2>
+{% endif %}
+{% endblock %}

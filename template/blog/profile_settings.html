@@ -1,33 +1,45 @@
 {% extends 'base.html' %}
-<style>
-    .container {
-        margin: 20px auto;
-        max-width: 600px;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        background-color: #f9f9f9;
-    }
-    
-    .bio-section {
-        margin-top: 20px;
-        padding: 10px;
-        border: 1px solid #e0e0e0;
-        border-radius: 5px;
-        background-color: #fff;
-    }
-</style>
+{% load static %}
+
+<head>
+    <!-- Include Tailwind CSS via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
 {% block content %}
-<div class="container">
-    <h2 class="text-center">Profile Settings</h2>
-    <form method="POST" enctype="multipart/form-data" class="form-group">
+<div class="container mx-auto mt-10 p-6 bg-white rounded-lg shadow-md max-w-md">
+    <h2 class="text-center text-2xl font-semibold">Profile Settings</h2>
+    <form method="POST" enctype="multipart/form-data" class="space-y-4">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Update Profile</button>
+        {{ form.as_p|safe }}
+        <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200">Update Profile</button>
     </form>
-    <div class="bio-section">
-        <h4>Bio</h4>
+    <div class="bio-section mt-6 p-4 border rounded bg-gray-100">
+        <h4 class="text-lg font-semibold">Bio</h4>
         <p>{{ user.bio|default:"No bio available." }}</p>
     </div>
 </div>
+
+<script>
+    // Example: Simple form validation
+    document.querySelector('form').addEventListener('submit', function(event) {
+        const username = document.querySelector('input[name="username"]');
+        const email = document.querySelector('input[name="email"]');
+
+        if (!username.value || !email.value) {
+            event.preventDefault();
+            alert('Please fill in all required fields.');
+        }
+    });
+
+    // Optional: Add animation to the bio section on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const bioSection = document.querySelector('.bio-section');
+        bioSection.classList.add('opacity-0');
+        setTimeout(() => {
+            bioSection.classList.remove('opacity-0');
+            bioSection.classList.add('transition-opacity', 'duration-500', 'opacity-100');
+        }, 100);
+    });
+</script>
 {% endblock %}

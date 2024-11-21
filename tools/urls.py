@@ -1,0 +1,41 @@
+from django.urls import path
+# from .views import *
+from .views import *
+urlpatterns = [
+    path('', home, name='tools'),
+
+    path('color_palette_generator/', color_palette_generator, name='color_palette_generator'),
+    path('matrix_determinant/', matrix_determinant, name='matrix_determinant'),
+    path('text_summarizer/', text_summarizer, name='text_summarizer'),
+    path('dns_lookup/', dns_lookup, name='dns_lookup'),
+    path('ip_validator/', ip_validator, name='ip_validator'),
+    path('currency_converter/', currency_converter, name='currency_converter'),
+    path('length_converter/', length_converter, name='length_converter'),
+    path('caesar_cipher/', caesar_cipher, name='caesar_cipher'),
+    path('temperature_converter/', temperature_converter, name='temperature_converter'),
+    path('json_to_csv/', json_to_csv, name='json_to_csv'),
+    path('csv_to_json/', csv_to_json, name='csv_to_json'),
+    path('anagram_checker/', anagram_checker, name='anagram_checker'),
+    path('url_tool/', url_tool, name='url_tool'),
+    path('password_generator/', password_generator, name='password_generator'),
+    path('joke_generator/', joke_generator, name='joke_generator'),
+    path('math_quiz/', math_quiz, name='math_quiz'),
+    path('periodic_table/', periodic_table, name='periodic_table'),
+    path('timezone_converter/', timezone_converter, name='timezone_converter'),
+    path('countdown_timer/', countdown_timer, name='countdown_timer'),
+    path('regex_tester/', regex_tester, name='regex_tester'),
+    path('markdown_previewer/', markdown_previewer, name='markdown_previewer'),
+    path('base64_tool/', base64_tool, name='base64_tool'),
+    path('unit_converter/', unit_converter, name='unit_converter'),
+    path('currency_converter/', currency_converter, name='currency_converter'),
+    path('age_calculator/', age_calculator, name='age_calculator'),
+    path('bmi_calculator/', bmi_calculator, name='bmi_calculator'),
+    path('loan_calculator/', loan_calculator, name='loan_calculator'),
+    path('text_counter/', text_counter, name='text_counter'),
+    path('case_converter/', case_converter, name='case_converter'),
+    path('palindrome_checker/', palindrome_checker, name='palindrome_checker'),
+    path('basic_calculator/', basic_calculator, name='basic_calculator'),
+    path('prime_checker/', prime_checker, name='prime_checker'),
+    path('json_formatter/', json_formatter, name='json_formatter'),
+    
+]

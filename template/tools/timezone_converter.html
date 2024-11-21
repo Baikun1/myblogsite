@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Timezone Converter</h1>
+<form method="POST">
+    {% csrf_token %}
+    <label for="from_tz">From Timezone:</label>
+    <select name="from_tz" id="from_tz">
+        {% for tz in timezones %}
+        <option value="{{ tz }}">{{ tz }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <label for="to_tz">To Timezone:</label>
+    <select name="to_tz" id="to_tz">
+        {% for tz in timezones %}
+        <option value="{{ tz }}">{{ tz }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <label for="time">Time (YYYY-MM-DD HH:MM):</label>
+    <input type="text" name="time" id="time" required>
+    <br>
+    <button type="submit">Convert</button>
+</form>
+
+{% if converted_time %}
+    <h2>Converted Time: {{ converted_time }}</h2>
+{% elif error %}
+    <h2>Error: {{ error }}</h2>
+{% endif %}
+{% endblock %}

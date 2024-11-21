@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Matrix Determinant Calculator{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-4 text-center">Matrix Determinant Calculator</h1>
+        <form id="matrix-form" action="{% url 'matrix_determinant' %}" method="POST">
+            {% csrf_token %}
+            <label for="matrix_data" class="block text-sm font-medium text-gray-700">Enter Matrix (rows separated by semicolons, columns by commas):</label>
+            <textarea id="matrix_data" name="matrix_data" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Example: 1,2;3,4"></textarea>
+            <button type="submit" class="mt-4 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200">Calculate Determinant</button>
+        </form>
+
+        {% if result is not None %}
+            <div class="mt-6">
+                <h2 class="text-lg font-semibold">Result:</h2>
+                <p class="text-xl text-blue-600">{{ result }}</p>
+            </div>
+        {% elif error %}
+            <div class="mt-6">
+                <h2 class="text-lg font-semibold text-red-600">Error:</h2>
+                <p class="text-xl">{{ error }}</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}IP Address Validator{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-4 text-center">IP Address Validator</h1>
+        <form action="{% url 'ip_validator' %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="ip_address" class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Enter IP Address" required>
+            <button type="submit" class="mt-4 w-full bg-blue-500 text-white py-2 rounded">Validate</button>
+        </form>
+        {% if is_valid is not None %}
+            <div class="mt-6">
+                <h2 class="text-lg font-semibold">Validation Result:</h2>
+                <p class="text-xl text-blue-600">{{ "Valid IP Address" if is_valid else "Invalid IP Address" }}</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

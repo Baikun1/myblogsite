@@ -155,7 +155,7 @@ def delete_post(request, slug):
     if request.method == 'POST':
         post.delete()
         messages.success(request, 'Blog post deleted successfully!')
-        return redirect('dashboard')
+        return redirect('home')
     return render(request, 'blog/delete_post.html', {'post': post})
 
 @login_required
@@ -188,7 +188,8 @@ def post_detail(request, slug):
     post = get_object_or_404(BlogPost, slug=slug, published=True)
     
     comments = post.comments.filter(parent__isnull=True).order_by('-created_at')
-    related_posts = BlogPost.objects.filter(category=post.category).exclude(id=post.id)[:3]
+    # Ensure related posts are published and not the current post
+    related_posts = BlogPost.objects.filter(category=post.category, published=True).exclude(id=post.id)[:3]
 
     if request.method == 'POST':
         comment_form = CommentForm(request.POST)
@@ -222,7 +223,6 @@ def post_detail(request, slug):
         'related_posts': related_posts,
     }
     return render(request, 'blog/post_detail.html', context)
-
 @login_required
 def add_comment(request, slug):
     post = get_object_or_404(BlogPost, slug=slug)

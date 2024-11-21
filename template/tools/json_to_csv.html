@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}JSON to CSV Converter{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-4 text-center">JSON to CSV Converter</h1>
+        <form action="{% url 'json_to_csv' %}" method="POST">
+            {% csrf_token %}
+            <textarea name="json_data" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder='[{"key": "value"}, ...]' required></textarea>
+            <button type="submit" class="mt-4 w-full bg-blue-500 text-white py-2 rounded">Convert</button>
+        </form>
+        {% if result %}
+            <div class="mt-6">
+                <h2 class="text-lg font-semibold">CSV Output:</h2>
+                <pre class="text-blue-600">{{ result }}</pre>
+            </div>
+        {% elif error %}
+            <div class="mt-6">
+                <h2 class="text-lg font-semibold text-red-600">Error:</h2>
+                <p class="text-xl">{{ error }}</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

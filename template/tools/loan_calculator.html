@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Loan Calculator</h1>
+<form method="POST">
+    {% csrf_token %}
+    <label for="principal">Principal Amount:</label>
+    <input type="number" name="principal" id="principal" required>
+    <br>
+    <label for="rate">Interest Rate (annual %):</label>
+    <input type="number" step="0.01" name="rate" id="rate" required>
+    <br>
+    <label for="tenure">Tenure (years):</label>
+    <input type="number" name="tenure" id="tenure" required>
+    <br>
+    <button type="submit">Calculate EMI</button>
+</form>
+
+{% if emi is not none %}
+    <h2>Your EMI: {{ emi }}</h2>
+{% endif %}
+ ```html
+{% endblock %}

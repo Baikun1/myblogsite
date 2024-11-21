@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Base64 Tool</h1>
+<form method="POST">
+    {% csrf_token %}
+    <label for="text">Text:</label>
+    <input type="text" name="text" id="text" required>
+    <br>
+    <label for="operation">Operation:</label>
+    <select name="operation" id="operation">
+        <option value="encode">Encode</option>
+        <option value="decode">Decode</option>
+    </select>
+    <br>
+    <button type="submit">Submit</button>
+</form>
+
+{% if result %}
+    <h2>Result: {{ result }}</h2>
+{% elif error %}
+    <h2>Error: {{ error }}</h2>
+{% endif %}
+{% endblock %}
